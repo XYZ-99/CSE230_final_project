@@ -13,6 +13,8 @@ Our project features a command-line gray-scale media player written in Haskell. 
 
 Besides, our media player incorporates text-based features. Subtitles can be loaded from a srt file and displayed on the screen. We will even introduce danmaku, a popular feature that enables viewers to post comments right on the screen to communicate with others.
 
+In an era of increasingly complex multimedia players, our project serves as a lightweight, user-friendly alternative, particularly suitable for resource-constrained environments or situations requiring quick setup. By transforming media into ASCII art, we aim to offer a unique, minimalist viewing experience that is both resource-efficient and creatively stimulating.
+
 ### Implementation Details
 
 #### Video
