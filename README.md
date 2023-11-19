@@ -2,7 +2,7 @@
 
 * Yinzhen Xu (xuyinzhen@ucsd.edu)
 * Helin Xu (hex005@ucsd.edu; xuhelin1911@gmail.com)
-* Yifei Chen (TODO)
+* Yifei Chen (yic107@ucsd.edu)
 * Yuan Ning (yuning@ucsd.edu)
 
 ## Project Proposal
