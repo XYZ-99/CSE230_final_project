@@ -1,7 +1,7 @@
 ## Group members
 
 * Yinzhen Xu (xuyinzhen@ucsd.edu)
-* Helin Xu (TODO)
+* Helin Xu (hex005@ucsd.edu; xuhelin1911@gmail.com)
 * Yifei Chen (yic107@ucsd.edu)
 * Yuan Ning (yuning@ucsd.edu)
 
