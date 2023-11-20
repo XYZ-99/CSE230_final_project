@@ -67,3 +67,5 @@ packages:
 # compiler-check: newer-minor
 extra-deps:
     - brick-0.47
+    - ffmpeg-light-0.14.1@sha256:9af7881af149c79a3d0617b2f3ec089d78e7f817abe9b9175520e40e346e1073,5320
+allow-newer: true
