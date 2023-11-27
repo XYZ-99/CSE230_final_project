@@ -1,6 +1,6 @@
 module Databus where
 
-data Databus = Databus
+data Databus = MakeDatabus
   { global_video_path :: String,
     global_cache_path :: String,
     global_current_frame :: Int,
