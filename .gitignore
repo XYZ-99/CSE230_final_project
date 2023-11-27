@@ -4,6 +4,47 @@
 *.mp4
 *.cabal
 
+# Video formats
+*.mp4
+*.avi
+*.mov
+*.wmv
+*.flv
+*.mkv
+*.webm
+
+# Image formats
+*.jpg
+*.jpeg
+*.png
+*.gif
+*.bmp
+*.tiff
+*.svg
+
+# Subtitle files
+*.srt
+*.sub
+*.idx
+*.ssa
+*.ass
+
+# Audio formats
+*.mp3
+*.wav
+*.aac
+*.flac
+*.ogg
+*.m4a
+
+# Other media files
+*.swf
+*.m3u
+*.m3u8
+*.pls
+*.cue
+
+
 # Stack build artifacts
 .stack-work/
 .stack-work-install/
