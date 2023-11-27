@@ -1,6 +1,8 @@
 # this project's specific
 *~
 *.lock
+*.mp4
+*.cabal
 
 # Stack build artifacts
 .stack-work/
