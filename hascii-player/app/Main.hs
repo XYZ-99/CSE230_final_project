@@ -1,17 +1,11 @@
-module Main (main) where
+module Main where
 
-import Brick (Widget, joinBorders, simpleMain, str, withBorderStyle, (<+>))
-import Brick.Widgets.Border (borderWithLabel, vBorder)
-import Brick.Widgets.Border.Style (unicode)
-import Brick.Widgets.Center (center)
-import Lib
-
-ui :: Widget ()
-ui =
-  joinBorders $
-    withBorderStyle unicode $
-      borderWithLabel (str "Hello!") $
-        (center (str "Left") <+> vBorder <+> center (str "Right"))
+import VideoProcessing
 
 main :: IO ()
-main = simpleMain ui
+main = do
+    let videoPath = "media/videos/movie.mp4"
+    let outputPattern = "media/frames/frame-%04d.png"  -- Output directory and pattern
+    extractFrames videoPath outputPattern
+    putStrLn "Frame extraction complete."
+
