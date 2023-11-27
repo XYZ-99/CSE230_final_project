@@ -5,7 +5,7 @@ data Databus = MakeDatabus
     global_cache_path :: String,
     global_current_frame :: Int,
     global_total_frames :: Int,
-    gloab_asciiart :: [[Char]],
+    global_asciiart :: [[Char]],
 
     ui2playbacklogic_status :: String
   }
