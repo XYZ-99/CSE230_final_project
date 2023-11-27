@@ -1,47 +1,72 @@
--- module UI where
-module Main where
+module UI where
+-- module Main where
 
 import Brick
 import Brick.Widgets.Border
 import Brick.Widgets.Core
+import Brick.Widgets.Border.Style (unicode, borderStyleFromChar)
 import Graphics.Vty.Attributes
+import Graphics.Vty.Input.Events
+import Graphics.Vty.Attributes
+import Brick.Main(App, defaultMain)
+import Databus
+
+
+
 
 
 -- Placeholder for the video window
-videoWindow :: String -> Widget n
-videoWindow videoContent = withBorderStyle unicode $
+videoWindow :: String -> Int -> Widget ()
+videoWindow videoContent width = withBorderStyle unicode $
     borderWithLabel (str "Video Window") $
-    vBox [ str videoContent ]
+    hLimit width $ vBox [ str videoContent ]
 
 -- Placeholder for the play/pause button
-playPauseButton :: String -> Widget n
-playPauseButton buttonText = withBorderStyle unicode $
-    border $ padAll 1 $ str buttonText
+playPauseButton :: String -> Int -> Widget ()
+playPauseButton play_or_pause height = withBorderStyle unicode $
+    border $ vLimit height  $ str (if play_or_pause == "play" then "▶" else "■")
 
 -- Placeholder for the progress bar
-progressBar :: String -> Widget n
-progressBar progress = withBorderStyle unicode $
-    border $ hBox [ str progress ]
+progressBar :: String -> Int -> Widget ()
+progressBar progress height = withBorderStyle unicode $
+    border $ vLimit height $ hBox [ str progress ]
 
 
-drawUI :: String -> String -> String -> [Widget n]
-drawUI videoContent buttonText progress = [ui]
-    where
-        ui = vBox [ videoWindow videoContent
-                  , hBox [ playPauseButton buttonText
-                         , progressBar progress
-                         ]
-                  ]
+
+drawUI :: Databus -> [Widget ()]
+drawUI db = [mainInterface (ui2playbacklogic_status db)]
+  where
+    mainInterface play_str = vBox [ videoWindow "a" 50
+                                   , hBox [ playPauseButton play_str 3
+                                          , progressBar "c" 3 ]
+                                   ]
 
 
-main :: IO ()
-main = defaultMain app "Some Video Content"
-    where
-        app = App { appDraw = drawUI "Some Video Content" "Play/Pause" "Progress"
-                  , appChooseCursor = neverShowCursor
-                  , appHandleEvent = handleEvent
-                  , appStartEvent = return
-                  , appAttrMap = const $ attrMap defAttr []
-                  }
-        handleEvent :: String -> BrickEvent n e -> EventM n (Next String)
-        handleEvent s _ = continue s
+appEvent :: Databus -> BrickEvent () e -> EventM () (Next Databus)
+appEvent db (VtyEvent (EvKey (KChar ' ') [])) =
+    continue $ if ui2playbacklogic_status db == "play" then db { ui2playbacklogic_status = "pause" } else db { ui2playbacklogic_status = "play" }
+appEvent databus (VtyEvent (EvKey KEsc [])) =
+    halt databus
+appEvent state _ = continue state
+
+uiapp :: App Databus e ()
+uiapp = App { appDraw = drawUI
+          , appHandleEvent = appEvent
+          , appStartEvent = return
+          , appAttrMap = const theMap
+          , appChooseCursor = neverShowCursor
+          }
+
+theMap :: AttrMap
+theMap = attrMap defAttr []
+
+initialDatabus :: Databus
+initialDatabus = MakeDatabus "" "" 0 0 [] "paused"
+
+
+-- ui_main :: IO ()
+-- ui_main = simpleMain $ mainInterface 3 50
+ui_main :: IO ()
+ui_main = do
+        defaultMain uiapp $ initialDatabus
+        return ()

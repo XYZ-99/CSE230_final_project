@@ -25,6 +25,7 @@ dependencies:
     - JuicyPixels
     - process
     - text
+    - vty
 
 ghc-options:
     - -Wall
