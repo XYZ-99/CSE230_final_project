@@ -24,6 +24,7 @@ dependencies:
     - brick
     - JuicyPixels
     - process
+    - text
 
 ghc-options:
     - -Wall
