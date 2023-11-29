@@ -46,6 +46,9 @@ playbacklogic_calc_current_frame databus
   | status == "play"  = nextFrameIndex 
   | status == "fast-forward" = fastForwardIndex 
   | status == "rewind" = rewindIndex 
+  | status == "pause" = currentFrame
+  | status == "end" = totalFrames - 1
+  | status == "beginning" = 0
   | otherwise = global_current_frame databus
   where
     status = ui2playbacklogic_status databus
@@ -60,3 +63,5 @@ playbacklogic_calc_current_frame databus
       | otherwise = 0
     currentFrame = global_current_frame databus
     totalFrames = global_total_frames databus
+
+
