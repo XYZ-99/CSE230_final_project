@@ -14,6 +14,8 @@ import Brick.BChan
 import Control.Monad (forever, void)
 import Graphics.Vty
 
+
+
 -- Video Window
 videoWindow :: Databus -> Widget ()
 videoWindow db = withBorderStyle unicode $

@@ -5,7 +5,7 @@ import qualified Data.Text  as T
 import System.Environment (getArgs)
 import ASCIILoading
 -- import UI
-import NewUI
+import UI
 main :: IO ()
 main = do
   return ()
