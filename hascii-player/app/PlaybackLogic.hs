@@ -57,13 +57,13 @@ updateDatabus databus asciiArt =
 
 playbacklogic_calc_current_frame :: Databus -> Int
 playbacklogic_calc_current_frame databus
-  | status == "play"  = nextFrameIndex 
+  | status == "play"  = if currentFrame < totalFrames - 1 then nextFrameIndex else totalFrames - 1
   | status == "fast-forward" = fastForwardIndex 
   | status == "rewind" = rewindIndex 
   | status == "pause" = currentFrame
   | status == "end" = totalFrames - 1
   | status == "beginning" = 0
-  | otherwise = if currentFrame >= totalFrames - 1 then totalFrames - 1 else global_current_frame databus
+  | otherwise = global_current_frame databus
   where
     status = ui2playbacklogic_status databus
     nextFrameIndex 
