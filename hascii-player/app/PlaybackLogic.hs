@@ -5,7 +5,7 @@ module PlaybackLogic where
 import Databus
 import ASCIILoading
 import qualified Data.Text as T
-import Preprocess (hash)
+import Preprocess (hash, preprocess_video_to_frame)
 import Databus (Databus(global_video_path, global_total_frames))
 
 
@@ -13,8 +13,15 @@ import Databus (Databus(global_video_path, global_total_frames))
 --  main
 playbacklogic_main :: Databus -> IO Databus
 playbacklogic_main databus = do
+    -- let source_video_path = global_video_path databus
+    -- let target_dir = global_cache_path databus  
+    
+    
+    -- preprocess_video_to_frame source_video_path target_dir
+
+
     let framePath = constructFramePath databus
-    let targetWidth = 100  -- TODO
+    let targetWidth = 200  -- TODO
     maybeImage <- loadImage framePath targetWidth
     case maybeImage of
         Just image -> do

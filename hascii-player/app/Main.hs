@@ -9,4 +9,6 @@ import UI
 import Preprocess
 main :: IO ()
 main = do
-  return ()
+      args <- getArgs
+      ui_main (args !! 0)
+        

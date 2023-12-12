@@ -19,7 +19,7 @@ import Graphics.Vty
 import PlaybackLogic
 import Databus (Databus(global_total_frames, global_asciiart))
 
-import Preprocess(hash)
+import Preprocess(preprocess_video_to_frame, hash)
 
 -- Video Window
 videoWindow :: Databus -> Widget ()
@@ -114,17 +114,18 @@ get_frames_dir db = global_cache_path db ++ "/" ++ show (hash (global_video_path
 
 -- getDirectoryContents :: FilePath -> IO [FilePath]
 
+interval = 100000
 
-ui_main :: IO ()
-ui_main = do
-    
-    let rawDatabus = MakeDatabus db_global_video_path db_global_cache_path 1 100 [] "play"
+ui_main :: String -> IO ()
+ui_main video_path = do
+    preprocess_video_to_frame video_path db_global_cache_path
+    let rawDatabus = MakeDatabus video_path db_global_cache_path 1 100 [] "play"
     frames <- getDirectoryContents $ get_frames_dir rawDatabus
-    let initialDatabus = MakeDatabus db_global_video_path db_global_cache_path 1 ((length frames) - 2) [] "play"
+    let initialDatabus = MakeDatabus video_path db_global_cache_path 1 ((length frames) - 2) [] "play"
     chan <- newBChan 10
     _ <- forkIO $ forever $ do
         writeBChan chan Tick
-        threadDelay 100000  -- 1 second
+        threadDelay interval 
     let buildVty = mkVty defaultConfig
     initialVty <- buildVty
     void $ customMain initialVty buildVty (Just chan) app initialDatabus
