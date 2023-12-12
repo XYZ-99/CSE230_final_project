@@ -8,6 +8,8 @@ import qualified Data.Text as T
 import Preprocess (hash)
 import Databus (Databus(global_video_path))
 
+
+
 --  main
 playbacklogic_main :: Databus -> IO Databus
 playbacklogic_main databus = do
@@ -22,9 +24,19 @@ playbacklogic_main databus = do
             putStrLn "Error: Failed to load image."
             return databus
 
+
+string_of_zeros :: Int -> String
+string_of_zeros 0 = ""
+string_of_zeros n = "0" ++ (string_of_zeros (n-1)) 
+
+align_length :: Int -> String
+align_length frame_num = let frame_num_str = show frame_num
+                            in (string_of_zeros (8 - length frame_num_str)) ++ frame_num_str
+
+
 -- Construct frame path
 constructFramePath :: Databus -> String
-constructFramePath databus = global_cache_path databus ++ "/" ++ show (hash (global_video_path databus)) ++ "/" ++ show (global_current_frame databus) ++ ".jpeg"
+constructFramePath databus = global_cache_path databus ++ "/" ++ show (hash (global_video_path databus)) ++ "/" ++ align_length (global_current_frame databus) ++ ".jpeg"
 
 -- Construct Databus
 constructDatabus :: Databus -> [String] -> Int -> Databus
