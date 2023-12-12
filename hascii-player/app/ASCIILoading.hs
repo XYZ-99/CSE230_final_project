@@ -64,7 +64,7 @@ convertToAsciiResolution img targetWidth =
   let originalWidth = imageWidth img
       originalHeight = imageHeight img
       aspectRatio = fromIntegral originalHeight / fromIntegral originalWidth
-      targetHeight = round $ fromIntegral targetWidth * aspectRatio
+      targetHeight = round $ fromIntegral targetWidth * aspectRatio * 0.5
    in convertRGB8ToGrayscale $ resizeBilinear targetWidth targetHeight img
 
 -- Convert a grayscale pixel value to an appropriate character
