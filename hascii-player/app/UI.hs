@@ -13,7 +13,7 @@ import Control.Concurrent (forkIO, threadDelay)
 import Brick.BChan
 import Control.Monad (forever, void)
 import Control.Monad.IO.Class (liftIO)
-import System.Directory (getDirectoryContents)
+import System.Directory (getDirectoryContents, doesFileExist,doesDirectoryExist)
 
 import Graphics.Vty
 import PlaybackLogic
@@ -29,7 +29,11 @@ videoWindow db = withBorderStyle unicode $
 
 -- Play/Pause Button
 playPauseButton :: Databus -> Widget ()
-playPauseButton db = str $ "Status: " ++ ui2playbacklogic_status db
+-- playPauseButton db = str $ "Status: " ++ ui2playbacklogic_status db
+playPauseButton db = case ui2playbacklogic_status db of
+    "play" -> str "▶️"
+    "pause" -> str "⏸"
+    _ -> str "■"
 
 -- -- Progress Bar
 -- myProgressBar :: Databus -> Widget ()
@@ -106,7 +110,7 @@ data Tick = Tick
 --   }
 
 db_global_video_path = "/Users/yifeichen/WorkSpace/GithubRepos/CSE230_final_project/CSE230_final_project/sample2.mov"
-db_global_cache_path = "/Users/helin/Documents/currents/CSE230/CSE230_final_project/hascii-player/app/hascii-player-cache"
+db_global_cache_path = "./hascii-player/app/hascii-player-cache"
 
 
 -- string_of_zeros :: Int -> String
@@ -128,8 +132,10 @@ interval = 100000
 
 ui_main :: String -> IO ()
 ui_main video_path = do
-    preprocess_video_to_frame video_path db_global_cache_path
+    
     let rawDatabus = MakeDatabus video_path db_global_cache_path 1 100 [] "play"
+    cached <- doesDirectoryExist $ get_frames_dir  rawDatabus
+    if cached then return () else preprocess_video_to_frame video_path db_global_cache_path
     frames <- getDirectoryContents $ get_frames_dir rawDatabus
     let initialDatabus = MakeDatabus video_path db_global_cache_path 1 ((length frames) - 2) [] "play"
     chan <- newBChan 10
