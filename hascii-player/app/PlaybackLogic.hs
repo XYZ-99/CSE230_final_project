@@ -6,7 +6,7 @@ import Databus
 import ASCIILoading
 import qualified Data.Text as T
 import Preprocess (hash)
-import Databus (Databus(global_video_path))
+import Databus (Databus(global_video_path, global_total_frames))
 
 
 
@@ -21,7 +21,7 @@ playbacklogic_main databus = do
             let asciiArt = lines (T.unpack (toAsciiArt image))
             return $ updateDatabus databus asciiArt
         Nothing -> do
-            putStrLn ("Error: Failed to load image." ++ constructFramePath databus )
+            putStrLn ("Error: Failed to load image." ++ constructFramePath databus ++ show(global_total_frames databus) )
             return databus
 
 

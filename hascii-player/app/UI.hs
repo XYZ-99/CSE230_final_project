@@ -13,11 +13,13 @@ import Control.Concurrent (forkIO, threadDelay)
 import Brick.BChan
 import Control.Monad (forever, void)
 import Control.Monad.IO.Class (liftIO)
+import System.Directory (getDirectoryContents)
 
 import Graphics.Vty
 import PlaybackLogic
+import Databus (Databus(global_total_frames, global_asciiart))
 
-
+import Preprocess(hash)
 
 -- Video Window
 videoWindow :: Databus -> Widget ()
@@ -51,6 +53,14 @@ appEvent db (VtyEvent (EvKey (KChar ' ') [])) = do
     let newStatus = if ui2playbacklogic_status db == "play" then "pause" else "play"
     newDb <- liftIO $ get_asciiart db { ui2playbacklogic_status = newStatus }
     continue newDb
+appEvent db (VtyEvent (EvKey KLeft [])) = do
+    let new_db = MakeDatabus (global_video_path db) (global_cache_path db) (if global_current_frame db - 5 < 1 then 1 else global_current_frame db - 5) (global_total_frames db) (global_asciiart db) (ui2playbacklogic_status db)
+    continue new_db
+appEvent db (VtyEvent (EvKey KRight [])) = do
+    let total_frames = global_total_frames db
+    let new_db = MakeDatabus (global_video_path db) (global_cache_path db)  (if global_current_frame db + 5 > total_frames then total_frames else global_current_frame db + 5) (global_total_frames db) (global_asciiart db) (ui2playbacklogic_status db)
+    continue new_db
+
 appEvent db (VtyEvent (EvKey KEsc [])) = halt db
 appEvent db _ = continue db
 
@@ -89,13 +99,32 @@ db_global_video_path = "/Users/yifeichen/WorkSpace/GithubRepos/CSE230_final_proj
 db_global_cache_path = "/Users/yifeichen/WorkSpace/GithubRepos/CSE230_final_project/CSE230_final_project/hascii-player/app/hascii-player-cache"
 
 
+-- string_of_zeros :: Int -> String
+-- string_of_zeros 0 = ""
+-- string_of_zeros n = "0" ++ (string_of_zeros (n-1)) 
+
+-- align_length :: Int -> String
+-- align_length frame_num = let frame_num_str = show frame_num
+--                             in (string_of_zeros (8 - length frame_num_str)) ++ frame_num_str
+
+
+
+get_frames_dir :: Databus -> String
+get_frames_dir db = global_cache_path db ++ "/" ++ show (hash (global_video_path db)) ++ "/frames"
+
+-- getDirectoryContents :: FilePath -> IO [FilePath]
+
+
 ui_main :: IO ()
 ui_main = do
-    let initialDatabus = MakeDatabus db_global_video_path db_global_cache_path 1 100 [] "play"
+    
+    let rawDatabus = MakeDatabus db_global_video_path db_global_cache_path 1 100 [] "play"
+    frames <- getDirectoryContents $ get_frames_dir rawDatabus
+    let initialDatabus = MakeDatabus db_global_video_path db_global_cache_path 1 ((length frames) - 2) [] "play"
     chan <- newBChan 10
     _ <- forkIO $ forever $ do
         writeBChan chan Tick
-        threadDelay 1000000  -- 1 second
+        threadDelay 100000  -- 1 second
     let buildVty = mkVty defaultConfig
     initialVty <- buildVty
     void $ customMain initialVty buildVty (Just chan) app initialDatabus
