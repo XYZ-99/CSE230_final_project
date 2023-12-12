@@ -91,7 +91,7 @@ db_global_cache_path = "/Users/yifeichen/WorkSpace/GithubRepos/CSE230_final_proj
 
 ui_main :: IO ()
 ui_main = do
-    let initialDatabus = MakeDatabus db_global_video_path db_global_cache_path 0 100 [] "play"
+    let initialDatabus = MakeDatabus db_global_video_path db_global_cache_path 1 100 [] "play"
     chan <- newBChan 10
     _ <- forkIO $ forever $ do
         writeBChan chan Tick

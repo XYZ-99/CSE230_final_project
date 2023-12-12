@@ -21,7 +21,7 @@ playbacklogic_main databus = do
             let asciiArt = lines (T.unpack (toAsciiArt image))
             return $ updateDatabus databus asciiArt
         Nothing -> do
-            putStrLn "Error: Failed to load image."
+            putStrLn ("Error: Failed to load image." ++ constructFramePath databus )
             return databus
 
 
@@ -36,7 +36,7 @@ align_length frame_num = let frame_num_str = show frame_num
 
 -- Construct frame path
 constructFramePath :: Databus -> String
-constructFramePath databus = global_cache_path databus ++ "/" ++ show (hash (global_video_path databus)) ++ "/" ++ align_length (global_current_frame databus) ++ ".jpeg"
+constructFramePath databus = global_cache_path databus ++ "/" ++ show (hash (global_video_path databus)) ++ "/frames/" ++ align_length (global_current_frame databus) ++ ".jpeg"
 
 -- Construct Databus
 constructDatabus :: Databus -> [String] -> Int -> Databus
