@@ -26,7 +26,7 @@ preprocess_make_dir_if_not_exists :: String -> IO ()
 preprocess_make_dir_if_not_exists dir = callCommand $ "mkdir -p " ++ dir
 
 preprocess_convert_command :: String -> String -> String
-preprocess_convert_command source target_dir = "ffmpeg -i " ++ source ++ " -r 1/1 " ++ target_dir ++ "/frames/$filename%08d" ++ preprocess_file_extension
+preprocess_convert_command source target_dir = "ffmpeg -i " ++ source ++ " -r 10 " ++ target_dir ++ "/frames/$filename%08d" ++ preprocess_file_extension
 
 make_dir_if_not_exists :: String -> IO ()
 make_dir_if_not_exists dir = callCommand $ "mkdir -p " ++ dir

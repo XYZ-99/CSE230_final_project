@@ -5,23 +5,30 @@ module PlaybackLogic where
 import Databus
 import ASCIILoading
 import qualified Data.Text as T
-import Preprocess (hash)
-import Databus (Databus(global_video_path))
+import Preprocess (hash, preprocess_video_to_frame)
+import Databus (Databus(global_video_path, global_total_frames))
 
 
 
 --  main
 playbacklogic_main :: Databus -> IO Databus
 playbacklogic_main databus = do
+    -- let source_video_path = global_video_path databus
+    -- let target_dir = global_cache_path databus  
+    
+    
+    -- preprocess_video_to_frame source_video_path target_dir
+
+
     let framePath = constructFramePath databus
-    let targetWidth = 100  -- TODO
+    let targetWidth = 200  -- TODO
     maybeImage <- loadImage framePath targetWidth
     case maybeImage of
         Just image -> do
             let asciiArt = lines (T.unpack (toAsciiArt image))
             return $ updateDatabus databus asciiArt
         Nothing -> do
-            putStrLn ("Error: Failed to load image." ++ constructFramePath databus )
+            putStrLn ("Error: Failed to load image." ++ constructFramePath databus ++ show(global_total_frames databus) )
             return databus
 
 
@@ -57,7 +64,7 @@ updateDatabus databus asciiArt =
 
 playbacklogic_calc_current_frame :: Databus -> Int
 playbacklogic_calc_current_frame databus
-  | status == "play"  = nextFrameIndex 
+  | status == "play"  = if currentFrame < totalFrames - 1 then nextFrameIndex else totalFrames - 1
   | status == "fast-forward" = fastForwardIndex 
   | status == "rewind" = rewindIndex 
   | status == "pause" = currentFrame
