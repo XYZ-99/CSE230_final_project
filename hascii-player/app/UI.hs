@@ -12,6 +12,8 @@ import Databus
 import Control.Concurrent (forkIO, threadDelay)
 import Brick.BChan
 import Control.Monad (forever, void)
+import Control.Monad.IO.Class (liftIO)
+
 import Graphics.Vty
 import PlaybackLogic
 
@@ -40,19 +42,15 @@ drawUI db = [uiLayout db]
                             , playPauseButton databus
                             , myProgressBar databus
                             ]
--- appEvent :: Databus -> BrickEvent n e -> EventM n (Next Databus)
--- appEvent db (VtyEvent (EvKey (KChar ' ') [])) = do
---     let newStatus = if ui2playbacklogic_status db == "play" then "pause" else "play"
---     let updatedDb = db { ui2playbacklogic_status = newStatus }
---     continue $ get_asciiart updatedDb  -- Update ASCII art based on new status
--- appEvent db (VtyEvent (EvKey KEsc [])) = halt db
--- appEvent db _ = continue db
 
 appEvent :: Databus -> BrickEvent n Tick -> EventM n (Next Databus)
-appEvent db (AppEvent Tick) = continue $ get_asciiart db
-appEvent db (VtyEvent (EvKey (KChar ' ') [])) = 
+appEvent db (AppEvent Tick) = do
+    newDb <- liftIO $ get_asciiart db
+    continue newDb
+appEvent db (VtyEvent (EvKey (KChar ' ') [])) = do
     let newStatus = if ui2playbacklogic_status db == "play" then "pause" else "play"
-    in continue $ get_asciiart db { ui2playbacklogic_status = newStatus }
+    newDb <- liftIO $ get_asciiart db { ui2playbacklogic_status = newStatus }
+    continue newDb
 appEvent db (VtyEvent (EvKey KEsc [])) = halt db
 appEvent db _ = continue db
 
@@ -65,45 +63,35 @@ app = App { appDraw = drawUI
           , appChooseCursor = neverShowCursor
           }
 
--- get_asciiart :: Databus -> Databus
--- get_asciiart db =
---   case ui2playbacklogic_status db of
---     "play" -> db { global_asciiart = ["Playing", "..."] }  -- Replace with actual ASCII art for playing
---     "pause" -> db { global_asciiart = ["Pausing", "..."] } -- Replace with actual ASCII art for pausing
---     _ -> db  -- Default case, can be modified as needed
-get_asciiart :: Databus -> Databus
-get_asciiart db =
-    let nextFrame = (global_current_frame db + 1) `mod` global_total_frames db
-    in db { global_current_frame = nextFrame, global_asciiart = ["Frame: " ++ show nextFrame] }
+
+-- get_asciiart :: Databus -> IO Databus
+-- get_asciiart db =do
+--     let nextFrame = (global_current_frame db + 1) `mod` global_total_frames db
+--      in db { global_current_frame = nextFrame, global_asciiart = ["Frame: " ++ show nextFrame] }
+    
+get_asciiart :: Databus -> IO Databus
+get_asciiart = playbacklogic_main
+
 data Tick = Tick
 
 
-get_databus :: Databus -> IO Databus
-get_databus db = do
-  let nextFrame = (global_current_frame db + 1) `mod` global_total_frames db
-  let dbWithNextFrame = db { global_current_frame = nextFrame }
---   return $ get_asciiart dbWithNextFrame
-  asciiart <- playbacklogic_main dbWithNextFrame
-  return asciiart
+-- data Databus = MakeDatabus
+--   { global_video_path :: String,
+--     global_cache_path :: String,
+--     global_current_frame :: Int,
+--     global_total_frames :: Int,
+--     global_asciiart :: [[Char]],
+
+--     ui2playbacklogic_status :: String
+--   }
+
+db_global_video_path = "/Users/yifeichen/WorkSpace/GithubRepos/CSE230_final_project/CSE230_final_project/sample2.mov"
+db_global_cache_path = "/Users/yifeichen/WorkSpace/GithubRepos/CSE230_final_project/CSE230_final_project/hascii-player/app/hascii-player-cache"
 
 
--- new_ui_main :: IO ()
--- new_ui_main = do
---    let initialDatabus = MakeDatabus "" "" 0 100 ["Initial", "State"] "play"
---    let loop db = do
---         db' <- get_databus db
---         defaultMain app db'
---         loop db'
---    loop initialDatabus
-
--- new_ui_main :: IO ()
--- new_ui_main = do
---    let initialDatabus = MakeDatabus "" "" 0 100 ["Initial", "State"] "play"
---    defaultMain app $ get_asciiart initialDatabus
---    return ()
 ui_main :: IO ()
 ui_main = do
-    let initialDatabus = MakeDatabus "" "" 0 100 [] "play"
+    let initialDatabus = MakeDatabus db_global_video_path db_global_cache_path 0 100 [] "play"
     chan <- newBChan 10
     _ <- forkIO $ forever $ do
         writeBChan chan Tick

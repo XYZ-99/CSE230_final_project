@@ -39,9 +39,9 @@ preprocess_video_to_frame source_video_path target_dir = do
   make_dir_if_not_exists $ target_dir ++ "/" ++ hashed ++ "/frames"
   callCommand $ preprocess_convert_command source_video_path $ target_dir ++ "/" ++ hashed
 
-s = "../sample2.mov"
+s = "/Users/yifeichen/WorkSpace/GithubRepos/CSE230_final_project/CSE230_final_project/sample2.mov"
 
 t = "hascii-player-cache"
 
-main :: IO ()
-main = preprocess_video_to_frame s t
+pre_main :: IO ()
+pre_main = preprocess_video_to_frame s t

@@ -5,6 +5,8 @@ module PlaybackLogic where
 import Databus
 import ASCIILoading
 import qualified Data.Text as T
+import Preprocess (hash)
+import Databus (Databus(global_video_path))
 
 --  main
 playbacklogic_main :: Databus -> IO Databus
@@ -22,7 +24,7 @@ playbacklogic_main databus = do
 
 -- Construct frame path
 constructFramePath :: Databus -> String
-constructFramePath databus = global_cache_path databus ++ "/" ++ show (global_current_frame databus) ++ ".png"
+constructFramePath databus = global_cache_path databus ++ "/" ++ show (hash (global_video_path databus)) ++ "/" ++ show (global_current_frame databus) ++ ".jpeg"
 
 -- Construct Databus
 constructDatabus :: Databus -> [String] -> Int -> Databus

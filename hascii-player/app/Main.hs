@@ -6,6 +6,7 @@ import System.Environment (getArgs)
 import ASCIILoading
 -- import UI
 import UI
+import Preprocess
 main :: IO ()
 main = do
   return ()
