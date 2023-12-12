@@ -14,7 +14,7 @@ import Databus (Databus(global_video_path))
 playbacklogic_main :: Databus -> IO Databus
 playbacklogic_main databus = do
     let framePath = constructFramePath databus
-    let targetWidth = 800
+    let targetWidth = 100  -- TODO
     maybeImage <- loadImage framePath targetWidth
     case maybeImage of
         Just image -> do
