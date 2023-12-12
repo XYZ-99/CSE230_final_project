@@ -13,6 +13,7 @@ import Control.Concurrent (forkIO, threadDelay)
 import Brick.BChan
 import Control.Monad (forever, void)
 import Control.Monad.IO.Class (liftIO)
+import Graphics.Vty.Attributes
 
 import Graphics.Vty
 import PlaybackLogic
@@ -29,11 +30,21 @@ videoWindow db = withBorderStyle unicode $
 playPauseButton :: Databus -> Widget ()
 playPauseButton db = str $ "Status: " ++ ui2playbacklogic_status db
 
--- Progress Bar
+-- -- Progress Bar
+-- myProgressBar :: Databus -> Widget ()
+-- myProgressBar db = 
+--     let progressValue = fromIntegral (global_current_frame db) / fromIntegral (global_total_frames db)
+--     in progressBar Nothing progressValue 
+
+-- Replace the myProgressBar function with this:
 myProgressBar :: Databus -> Widget ()
-myProgressBar db = 
-    let progressValue = fromIntegral (global_current_frame db) / fromIntegral (global_total_frames db)
-    in progressBar Nothing progressValue 
+myProgressBar db =
+    let width = 195
+        progressValue = fromIntegral (global_current_frame db) / fromIntegral (global_total_frames db)
+        progressLength = round (progressValue * fromIntegral width)
+        progressBarText = "[" ++ show (round (progressValue * 100)) ++ "%" ++ replicate progressLength '#' ++ replicate (width - progressLength) '.' ++ "]"
+    in str $ progressBarText
+
 
 drawUI :: Databus -> [Widget ()]
 drawUI db = [uiLayout db]
@@ -86,7 +97,7 @@ data Tick = Tick
 --   }
 
 db_global_video_path = "/Users/yifeichen/WorkSpace/GithubRepos/CSE230_final_project/CSE230_final_project/sample2.mov"
-db_global_cache_path = "/Users/yifeichen/WorkSpace/GithubRepos/CSE230_final_project/CSE230_final_project/hascii-player/app/hascii-player-cache"
+db_global_cache_path = "/Users/helin/Documents/currents/CSE230/CSE230_final_project/hascii-player/app/hascii-player-cache"
 
 
 ui_main :: IO ()
