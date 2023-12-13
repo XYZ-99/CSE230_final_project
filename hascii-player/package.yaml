@@ -26,6 +26,9 @@ dependencies:
     - process
     - text
     - vty
+    - time
+    - ansi-terminal
+    - directory
 
 ghc-options:
     - -Wall

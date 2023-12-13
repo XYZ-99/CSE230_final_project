@@ -6,6 +6,8 @@ import Brick
 import Brick.Widgets.Border
 import Brick.Widgets.Core
 import Brick.Widgets.ProgressBar
+import Brick.Types
+import Brick.Main
 import Graphics.Vty.Attributes
 import Brick.Widgets.Border.Style
 import Graphics.Vty.Input.Events
