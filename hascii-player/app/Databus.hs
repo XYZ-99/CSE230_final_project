@@ -7,5 +7,8 @@ data Databus = MakeDatabus
     global_total_frames :: Int,
     global_asciiart :: [[Char]],
 
+    global_subtitile :: String,
+    global_video_length_seconds :: Int,
+
     ui2playbacklogic_status :: String
   }
