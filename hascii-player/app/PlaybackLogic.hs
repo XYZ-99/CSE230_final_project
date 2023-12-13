@@ -47,14 +47,15 @@ constructFramePath databus = global_cache_path databus ++ "/" ++ show (hash (glo
 
 -- Construct Databus
 constructDatabus :: Databus -> [String] -> Int -> Databus
-constructDatabus databus asciiArt newCurrentFrameIndex = MakeDatabus {
-    global_video_path       = global_video_path databus,
-    global_cache_path       = global_cache_path databus,
-    global_current_frame    = newCurrentFrameIndex,
-    global_total_frames     = global_total_frames databus,
-    global_asciiart         = asciiArt,
-    ui2playbacklogic_status = ui2playbacklogic_status databus
-}
+-- constructDatabus databus asciiArt newCurrentFrameIndex = MakeDatabus {
+--     global_video_path       = global_video_path databus,
+--     global_cache_path       = global_cache_path databus,
+--     global_current_frame    = newCurrentFrameIndex,
+--     global_total_frames     = global_total_frames databus,
+--     global_asciiart         = asciiArt,
+--     ui2playbacklogic_status = ui2playbacklogic_status databus
+-- }
+constructDatabus databus asciiArt newCurrentFrameIndex = databus {global_current_frame = newCurrentFrameIndex,global_asciiart = asciiArt}
 
 -- Update and return Databus
 updateDatabus :: Databus -> [String] -> Databus

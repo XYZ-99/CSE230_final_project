@@ -1,3 +1,5 @@
+{-# OPTIONS_GHC -Wno-unrecognised-pragmas #-}
+{-# HLINT ignore "Use camelCase" #-}
 module UI where
 
 import Brick
@@ -18,7 +20,7 @@ import System.Console.ANSI
 
 import Graphics.Vty
 import PlaybackLogic
-import Databus (Databus(global_total_frames, global_asciiart))
+import Databus (Databus(global_total_frames, global_asciiart, global_current_frame))
 
 import Preprocess(preprocess_video_to_frame, hash)
 
@@ -69,11 +71,13 @@ appEvent db (VtyEvent (EvKey (KChar ' ') [])) = do
     newDb <- liftIO $ get_asciiart db { ui2playbacklogic_status = newStatus }
     continue newDb
 appEvent db (VtyEvent (EvKey KLeft [])) = do
-    let new_db = MakeDatabus (global_video_path db) (global_cache_path db) (if global_current_frame db - 5 < 1 then 1 else global_current_frame db - 5) (global_total_frames db) (global_asciiart db) (ui2playbacklogic_status db)
+    let new_db = db {global_current_frame = if global_current_frame db - 5 < 1 then 1 else global_current_frame db - 5}
+    -- let new_db = MakeDatabus (global_video_path db) (global_cache_path db) (if global_current_frame db - 5 < 1 then 1 else global_current_frame db - 5) (global_total_frames db) (global_asciiart db) (ui2playbacklogic_status db)
     continue new_db
 appEvent db (VtyEvent (EvKey KRight [])) = do
     let total_frames = global_total_frames db
-    let new_db = MakeDatabus (global_video_path db) (global_cache_path db)  (if global_current_frame db + 5 > total_frames then total_frames else global_current_frame db + 5) (global_total_frames db) (global_asciiart db) (ui2playbacklogic_status db)
+    let new_db = db {global_current_frame = if global_current_frame db + 5 > total_frames then total_frames else global_current_frame db + 5}
+    -- let new_db = MakeDatabus (global_video_path db) (global_cache_path db)  (if global_current_frame db + 5 > total_frames then total_frames else global_current_frame db + 5) (global_total_frames db) (global_asciiart db) (ui2playbacklogic_status db)
     continue new_db
 
 appEvent db (VtyEvent (EvKey KEsc [])) = halt db
@@ -110,7 +114,7 @@ data Tick = Tick
 --     ui2playbacklogic_status :: String
 --   }
 
--- db_global_video_path = "/Users/yifeichen/WorkSpace/GithubRepos/CSE230_final_project/CSE230_final_project/sample2.mov"
+db_global_video_path = "/Users/yifeichen/WorkSpace/GithubRepos/CSE230_final_project/CSE230_final_project/sample2.mov"
 db_global_cache_path = "./hascii-player/app/hascii-player-cache"
 
 
@@ -134,11 +138,23 @@ interval = 100000
 ui_main :: String -> IO ()
 ui_main video_path = do
     
-    let rawDatabus = MakeDatabus video_path db_global_cache_path 1 100 [] "play"
+    let rawDatabus = MakeDatabus
+                    { global_video_path = video_path,
+                    global_cache_path = db_global_cache_path,
+                    global_current_frame = 1,
+                    global_total_frames = 100,
+                    global_asciiart = [],
+
+                    global_subtitle = "",
+                    global_video_length_seconds = 100,
+                    global_subtitle_path = "",
+
+                    ui2playbacklogic_status = "play"
+                   }
     cached <- doesDirectoryExist $ get_frames_dir  rawDatabus
     if cached then return () else preprocess_video_to_frame video_path db_global_cache_path
     frames <- getDirectoryContents $ get_frames_dir rawDatabus
-    let initialDatabus = MakeDatabus video_path db_global_cache_path 1 ((length frames) - 2) [] "play"
+    let initialDatabus = rawDatabus {global_total_frames = length frames}
     chan <- newBChan 10
     _ <- forkIO $ forever $ do
         writeBChan chan Tick

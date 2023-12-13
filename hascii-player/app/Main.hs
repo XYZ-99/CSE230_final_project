@@ -6,9 +6,11 @@ import System.Environment (getArgs)
 import ASCIILoading
 -- import UI
 import UI
-import Preprocess
+-- import Preprocess
+import Subtitle
 main :: IO ()
 main = do
       args <- getArgs
       ui_main (args !! 0)
+      -- return ()
         
