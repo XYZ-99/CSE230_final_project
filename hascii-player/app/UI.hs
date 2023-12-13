@@ -36,6 +36,10 @@ playPauseButton db = case ui2playbacklogic_status db of
     "pause" -> str "▶️"
     _ -> str "■"
 
+captionBar :: Databus -> Widget ()
+captionBar db = str $ "\n" ++ setSGRCode [SetColor Foreground Vivid Green] ++ global_subtitile db ++ setSGRCode [Reset] ++ "\n"
+
+
 -- -- Progress Bar
 -- myProgressBar :: Databus -> Widget ()
 -- myProgressBar db = 
@@ -48,7 +52,7 @@ myProgressBar db =
     let width = 195
         progressValue = fromIntegral (global_current_frame db) / fromIntegral (global_total_frames db)
         progressLength = round (progressValue * fromIntegral width)
-        progressBarText = setSGRCode [SetColor Foreground Vivid Red] ++ show (round (progressValue * 100)) ++ "[" ++ "%" ++ replicate progressLength '█' ++ replicate (width - progressLength) '.' ++ "]"
+        progressBarText = playPauseButton db ++ setSGRCode [SetColor Foreground Vivid Red] ++ show (round (progressValue * 100)) ++ "[" ++ "%" ++ replicate progressLength '█' ++ replicate (width - progressLength) '.' ++ "]"
     in str $ progressBarText
 
 
@@ -56,7 +60,8 @@ drawUI :: Databus -> [Widget ()]
 drawUI db = [uiLayout db]
   where
     uiLayout databus = vBox [ videoWindow databus
-                            , playPauseButton databus
+                            -- , playPauseButton databus
+                            , captionBar databus
                             , myProgressBar databus
                             ]
 
