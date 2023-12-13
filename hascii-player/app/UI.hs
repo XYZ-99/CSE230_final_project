@@ -126,7 +126,7 @@ data Tick = Tick
 --   }
 
 db_global_video_path = "/Users/yifeichen/WorkSpace/GithubRepos/CSE230_final_project/CSE230_final_project/sample2.mov"
-db_global_cache_path = "./hascii-player/app/hascii-player-cache"
+db_global_cache_path = "./hascii-player-cache"
 
 
 -- string_of_zeros :: Int -> String

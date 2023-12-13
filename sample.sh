@@ -1,0 +1,1 @@
+sh run.sh "../../sample.mov" "../../sample.srt"

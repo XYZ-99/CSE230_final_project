@@ -28,7 +28,7 @@ playbacklogic_main databus = do
             let asciiArt = lines (T.unpack (toAsciiArt image))
             return $ updateDatabus databus asciiArt
         Nothing -> do
-            putStrLn ("Error: Failed to load image." ++ constructFramePath databus ++ show(global_total_frames databus) )
+            putStrLn ("Error: Failed to load image. " ++ constructFramePath databus )
             return databus
 
 

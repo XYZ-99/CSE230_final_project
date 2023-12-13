@@ -67,4 +67,4 @@ packages:
 # compiler-check: newer-minor
 extra-deps:
     - brick-0.47
-allow-newer: true
+# allow-newer: true
