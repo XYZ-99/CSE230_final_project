@@ -14,6 +14,7 @@ import Brick.BChan
 import Control.Monad (forever, void)
 import Control.Monad.IO.Class (liftIO)
 import System.Directory (getDirectoryContents, doesFileExist,doesDirectoryExist)
+import System.Console.ANSI
 
 import Graphics.Vty
 import PlaybackLogic
@@ -47,7 +48,7 @@ myProgressBar db =
     let width = 195
         progressValue = fromIntegral (global_current_frame db) / fromIntegral (global_total_frames db)
         progressLength = round (progressValue * fromIntegral width)
-        progressBarText = "[" ++ show (round (progressValue * 100)) ++ "%" ++ replicate progressLength '#' ++ replicate (width - progressLength) '.' ++ "]"
+        progressBarText = setSGRCode [SetColor Foreground Vivid Red] ++ show (round (progressValue * 100)) ++ "[" ++ "%" ++ replicate progressLength '█' ++ replicate (width - progressLength) '.' ++ "]"
     in str $ progressBarText
 
 
@@ -109,7 +110,7 @@ data Tick = Tick
 --     ui2playbacklogic_status :: String
 --   }
 
-db_global_video_path = "/Users/yifeichen/WorkSpace/GithubRepos/CSE230_final_project/CSE230_final_project/sample2.mov"
+-- db_global_video_path = "/Users/yifeichen/WorkSpace/GithubRepos/CSE230_final_project/CSE230_final_project/sample2.mov"
 db_global_cache_path = "./hascii-player/app/hascii-player-cache"
 
 
