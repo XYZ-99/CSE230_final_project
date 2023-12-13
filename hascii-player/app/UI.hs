@@ -5,6 +5,7 @@ module UI where
 import Brick
 import Brick.Widgets.Border
 import Brick.Widgets.Core
+import Brick.Widgets.Center (hCenter)
 import Brick.Widgets.ProgressBar
 import Graphics.Vty.Attributes
 import Brick.Widgets.Border.Style
@@ -18,6 +19,7 @@ import Control.Monad.IO.Class (liftIO)
 import System.Directory (getDirectoryContents, doesFileExist,doesDirectoryExist)
 import System.Console.ANSI
 
+import Codec.Picture
 import Graphics.Vty
 import PlaybackLogic
 import Databus (Databus(global_total_frames, global_asciiart, global_current_frame))
@@ -39,7 +41,7 @@ playPauseButton db = case ui2playbacklogic_status db of
     _ ->  "■ "
 
 captionBar :: Databus -> Widget ()
-captionBar db = str $ "\n" ++ setSGRCode [SetColor Foreground Vivid Green] ++ global_subtitle db ++ setSGRCode [Reset] ++ "\n\n"
+captionBar db =  hCenter $ str $ "\n" ++ setSGRCode [SetColor Foreground Vivid Green] ++ global_subtitle db ++ setSGRCode [Reset] ++ "\n\n"
 
 
 -- -- Progress Bar
@@ -159,11 +161,15 @@ ui_main video_path = do
     cached <- doesDirectoryExist $ get_frames_dir  rawDatabus
     if cached then return () else preprocess_video_to_frame video_path db_global_cache_path
     frames <- getDirectoryContents $ get_frames_dir rawDatabus
-    let initialDatabus = rawDatabus {global_total_frames = length frames}
     chan <- newBChan 10
     _ <- forkIO $ forever $ do
         writeBChan chan Tick
         threadDelay interval 
     let buildVty = mkVty defaultConfig
     initialVty <- buildVty
+    
+    vty <- mkVty defaultConfig
+    (width, height) <- displayBounds $ outputIface vty
+
+    let initialDatabus = rawDatabus {global_total_frames = length frames, global_width = width, global_vty = vty}
     void $ customMain initialVty buildVty (Just chan) app initialDatabus

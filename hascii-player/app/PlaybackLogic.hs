@@ -7,6 +7,8 @@ import ASCIILoading
 import qualified Data.Text as T
 import Preprocess (hash, preprocess_video_to_frame)
 import Databus (Databus(global_video_path, global_total_frames))
+import Codec.Picture
+import Graphics.Vty
 
 
 
@@ -19,9 +21,9 @@ playbacklogic_main databus = do
     
     -- preprocess_video_to_frame source_video_path target_dir
 
-
+    (width, height) <- displayBounds $ outputIface (global_vty databus)
     let framePath = constructFramePath databus
-    let targetWidth = 200  -- TODO
+    let targetWidth = width
     maybeImage <- loadImage framePath targetWidth
     case maybeImage of
         Just image -> do
