@@ -6,6 +6,7 @@ import Data.Time.Format
 import Data.Time.Clock
 import Data.Time.Calendar
 import Data.List (find)
+import Control.Exception (catch, IOException)
 
 
 import Databus
@@ -60,16 +61,24 @@ get_srt_file_path :: Databus -> String
 get_srt_file_path db = global_subtitle_path db
 
 
--- Main function to parse the SRT file
+
 parseSRT :: FilePath -> Int -> IO String
-parseSRT filePath currentTime = do
-    fileContent <- readFile filePath
-    let subtitles = splitBlocks fileContent
-    return $ maybe_to_string $ findCurrentSubtitle currentTime subtitles
+parseSRT filePath currentTime = catch readAndProcessFile handleException
+  where
+    readAndProcessFile :: IO String
+    readAndProcessFile = do
+        fileContent <- readFile filePath
+        let subtitles = splitBlocks fileContent
+        return $ maybe_to_string $ findCurrentSubtitle currentTime subtitles
+
+    handleException :: IOException -> IO String
+    handleException _ = return ""
+
 
 
 get_current_time :: Databus -> Int
-get_current_time db = global_current_frame db * (global_video_length_seconds db) `div` (global_total_frames db)
+-- get_current_time db = global_current_frame db * (global_video_length_seconds db) `div` (global_total_frames db)
+get_current_time db = (global_current_frame db - 1) * 10 
 
 get_subtitle_from_frame :: Databus -> IO Databus
 get_subtitle_from_frame db = do

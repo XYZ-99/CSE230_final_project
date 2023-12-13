@@ -20,9 +20,11 @@ import System.Console.ANSI
 
 import Graphics.Vty
 import PlaybackLogic
-import Databus (Databus(global_total_frames, global_asciiart, global_current_frame))
+import Databus (Databus(global_total_frames, global_asciiart, global_current_frame, global_video_length_seconds))
+import Subtitle (get_subtitle_from_frame)
 
 import Preprocess(preprocess_video_to_frame, hash)
+-- import VideoDuration
 
 -- Video Window
 videoWindow :: Databus -> Widget ()
@@ -65,6 +67,7 @@ drawUI db = [uiLayout db]
 appEvent :: Databus -> BrickEvent n Tick -> EventM n (Next Databus)
 appEvent db (AppEvent Tick) = do
     newDb <- liftIO $ get_asciiart db
+    newerDb <- liftIO $ get_subtitle_from_frame db
     continue newDb
 appEvent db (VtyEvent (EvKey (KChar ' ') [])) = do
     let newStatus = if ui2playbacklogic_status db == "play" then "pause" else "play"
@@ -138,19 +141,25 @@ interval = 100000
 ui_main :: String -> IO ()
 ui_main video_path = do
     
+
+
     let rawDatabus = MakeDatabus
-                    { global_video_path = video_path,
-                    global_cache_path = db_global_cache_path,
-                    global_current_frame = 1,
-                    global_total_frames = 100,
-                    global_asciiart = [],
-
-                    global_subtitle = "",
-                    global_video_length_seconds = 100,
-                    global_subtitle_path = "",
-
-                    ui2playbacklogic_status = "play"
+                    { 
+                        global_video_path = video_path,
+                        global_cache_path = db_global_cache_path,
+                        global_current_frame = 1,
+                        global_total_frames = 100,
+                        global_asciiart = [],
+                        global_subtitle = "",
+                        global_video_length_seconds = 100,
+                        global_subtitle_path = "",
+                        ui2playbacklogic_status = "play"
                    }
+    -- either_video_duration <- getVideoDuration rawDatabus
+    -- let video_duration = case either_video_duration of 
+    --                         Left v -> round v
+    --                         Right _ -> 1
+
     cached <- doesDirectoryExist $ get_frames_dir  rawDatabus
     if cached then return () else preprocess_video_to_frame video_path db_global_cache_path
     frames <- getDirectoryContents $ get_frames_dir rawDatabus
