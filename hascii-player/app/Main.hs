@@ -11,6 +11,6 @@ import Subtitle
 main :: IO ()
 main = do
       args <- getArgs
-      ui_main (args !! 0)
-      -- return ()
+      ui_main (args !! 0) (args !! 1)
+      return ()
         
