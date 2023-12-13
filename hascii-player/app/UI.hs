@@ -32,8 +32,8 @@ videoWindow db = withBorderStyle unicode $
 playPauseButton :: Databus -> Widget ()
 -- playPauseButton db = str $ "Status: " ++ ui2playbacklogic_status db
 playPauseButton db = case ui2playbacklogic_status db of
-    "play" -> str "▶️"
-    "pause" -> str "⏸"
+    "play" -> str "⏸"
+    "pause" -> str "▶️"
     _ -> str "■"
 
 -- -- Progress Bar
