@@ -31,15 +31,15 @@ videoWindow db = withBorderStyle unicode $
   vBox $ map str (global_asciiart db)
 
 -- Play/Pause Button
-playPauseButton :: Databus -> Widget ()
+playPauseButton :: Databus -> String
 -- playPauseButton db = str $ "Status: " ++ ui2playbacklogic_status db
 playPauseButton db = case ui2playbacklogic_status db of
-    "play" -> str "⏸"
-    "pause" -> str "▶️"
-    _ -> str "■"
+    "play" ->  "⏸ "
+    "pause" ->  "▶️ "
+    _ ->  "■ "
 
 captionBar :: Databus -> Widget ()
-captionBar db = str $ "\n" ++ setSGRCode [SetColor Foreground Vivid Green] ++ global_subtitile db ++ setSGRCode [Reset] ++ "\n"
+captionBar db = str $ "\n" ++ setSGRCode [SetColor Foreground Vivid Green] ++ global_subtitle db ++ setSGRCode [Reset] ++ "\n\n"
 
 
 -- -- Progress Bar
@@ -54,7 +54,7 @@ myProgressBar db =
     let width = 195
         progressValue = fromIntegral (global_current_frame db) / fromIntegral (global_total_frames db)
         progressLength = round (progressValue * fromIntegral width)
-        progressBarText = playPauseButton db ++ setSGRCode [SetColor Foreground Vivid Red] ++ show (round (progressValue * 100)) ++ "[" ++ "%" ++ replicate progressLength '█' ++ replicate (width - progressLength) '.' ++ "]"
+        progressBarText = playPauseButton db ++ show (round (progressValue * 100)) ++ "% " ++ "[" ++ replicate progressLength '█' ++ replicate (width - progressLength) '.' ++ "]"
     in str $ progressBarText
 
 
@@ -150,7 +150,7 @@ ui_main video_path = do
                     global_total_frames = 100,
                     global_asciiart = [],
 
-                    global_subtitle = "",
+                    global_subtitle = "This is a subtitle",
                     global_video_length_seconds = 100,
                     global_subtitle_path = "",
 
