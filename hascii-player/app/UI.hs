@@ -33,12 +33,16 @@ videoWindow db = withBorderStyle unicode $
   vBox $ map str (global_asciiart db)
 
 -- Play/Pause Button
-playPauseButton :: Databus -> Widget ()
+playPauseButton :: Databus -> String
 -- playPauseButton db = str $ "Status: " ++ ui2playbacklogic_status db
 playPauseButton db = case ui2playbacklogic_status db of
-    "play" -> str "⏸"
-    "pause" -> str "▶️"
-    _ -> str "■"
+    "play" ->  "⏸ "
+    "pause" ->  "▶️ "
+    _ ->  "■ "
+
+captionBar :: Databus -> Widget ()
+captionBar db = str $ "\n" ++ setSGRCode [SetColor Foreground Vivid Green] ++ global_subtitle db ++ setSGRCode [Reset] ++ "\n\n"
+
 
 -- -- Progress Bar
 -- myProgressBar :: Databus -> Widget ()
@@ -52,7 +56,7 @@ myProgressBar db =
     let width = 195
         progressValue = fromIntegral (global_current_frame db) / fromIntegral (global_total_frames db)
         progressLength = round (progressValue * fromIntegral width)
-        progressBarText = setSGRCode [SetColor Foreground Vivid Red] ++ show (round (progressValue * 100)) ++ "[" ++ "%" ++ replicate progressLength '█' ++ replicate (width - progressLength) '.' ++ "]"
+        progressBarText = playPauseButton db ++ show (round (progressValue * 100)) ++ "% " ++ "[" ++ replicate progressLength '█' ++ replicate (width - progressLength) '.' ++ "]"
     in str $ progressBarText
 
 
@@ -60,7 +64,8 @@ drawUI :: Databus -> [Widget ()]
 drawUI db = [uiLayout db]
   where
     uiLayout databus = vBox [ videoWindow databus
-                            , playPauseButton databus
+                            -- , playPauseButton databus
+                            , captionBar databus
                             , myProgressBar databus
                             ]
 
