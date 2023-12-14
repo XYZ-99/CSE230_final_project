@@ -32,7 +32,7 @@ import Data.String (String)
 -- Video Window
 videoWindow :: Databus -> Widget ()
 videoWindow db = withBorderStyle unicode $
-  borderWithLabel (str "Video Window") $
+  borderWithLabel (str "Hascii-Plaλer") $
   vBox $ map str (global_asciiart db)
 
 -- Play/Pause Button
