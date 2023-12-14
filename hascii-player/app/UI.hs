@@ -66,7 +66,7 @@ myProgressBar db =
     let width = 195
         progressValue = fromIntegral (global_current_frame db) / fromIntegral (global_total_frames db)
         progressLength = round (progressValue * fromIntegral width)
-        progressBarText = playPauseButton db ++ show (round (progressValue * 100)) ++ "% " ++ "[" ++ replicate progressLength '█' ++ replicate (width - progressLength) '.' ++ "]"
+        progressBarText = playPauseButton db ++ show (round (progressValue * 100)) ++ "% " ++ "[" ++ replicate progressLength '█' ++ replicate (width - progressLength - 1) '.' ++ "]"
     in str $ progressBarText
 
 
