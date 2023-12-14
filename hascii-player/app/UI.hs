@@ -89,12 +89,12 @@ appEvent db (VtyEvent (EvKey (KChar ' ') [])) = do
     newDb <- liftIO $ get_asciiart db { ui2playbacklogic_status = newStatus }
     continue newDb
 appEvent db (VtyEvent (EvKey KLeft [])) = do
-    let new_db = db {global_current_frame = if global_current_frame db - 5 < 1 then 1 else global_current_frame db - 5}
+    let new_db = db {global_current_frame = if global_current_frame db - 20 < 1 then 1 else global_current_frame db - 5}
     -- let new_db = MakeDatabus (global_video_path db) (global_cache_path db) (if global_current_frame db - 5 < 1 then 1 else global_current_frame db - 5) (global_total_frames db) (global_asciiart db) (ui2playbacklogic_status db)
     continue new_db
 appEvent db (VtyEvent (EvKey KRight [])) = do
     let total_frames = global_total_frames db
-    let new_db = db {global_current_frame = if global_current_frame db + 5 > total_frames then total_frames else global_current_frame db + 5}
+    let new_db = db {global_current_frame = if global_current_frame db + 20 > total_frames then total_frames else global_current_frame db + 5}
     -- let new_db = MakeDatabus (global_video_path db) (global_cache_path db)  (if global_current_frame db + 5 > total_frames then total_frames else global_current_frame db + 5) (global_total_frames db) (global_asciiart db) (ui2playbacklogic_status db)
     continue new_db
 
