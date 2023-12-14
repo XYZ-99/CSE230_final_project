@@ -40,7 +40,7 @@ playPauseButton :: Databus -> String
 -- playPauseButton db = str $ "Status: " ++ ui2playbacklogic_status db
 playPauseButton db = case ui2playbacklogic_status db of
     "play" ->  "⏸ "
-    "pause" ->  "▶️ "
+    "pause" ->  "▶ "
     _ ->  "■ "
 
 
