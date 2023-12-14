@@ -43,8 +43,15 @@ playPauseButton db = case ui2playbacklogic_status db of
     "pause" ->  "▶️ "
     _ ->  "■ "
 
+
+alignMiddleCaption :: Databus -> String
+alignMiddleCaption db = let caption = global_subtitle db
+                            in (replicate (div (200 - length caption) 2) ' ') ++ caption
+
+
+
 captionBar :: Databus -> Widget ()
-captionBar db = str $ "\n" ++ setSGRCode [SetColor Foreground Vivid Green] ++ global_subtitle db ++   "\n\n"
+captionBar db = str $ "\n" ++ setSGRCode [SetColor Foreground Vivid Green] ++ alignMiddleCaption db ++   "\n\n"
 
 
 -- -- Progress Bar
