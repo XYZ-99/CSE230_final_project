@@ -6,7 +6,7 @@ import System.Environment (getArgs)
 
 -- Define a custom character set to represent varying shades of gray
 characterSet :: String
-characterSet = "@%#*+=-:. "
+characterSet = " .:-=+*#%@"
 
 -- Load an image file and convert it to grayscale
 loadImage :: FilePath -> Int -> IO (Maybe (Image Pixel8))
