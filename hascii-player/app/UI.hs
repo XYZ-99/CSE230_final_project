@@ -167,7 +167,8 @@ ui_main video_path srt_path = do
     cached <- doesDirectoryExist $ get_frames_dir  rawDatabus
     if cached then return () else preprocess_video_to_frame video_path db_global_cache_path
     frames <- getDirectoryContents $ get_frames_dir rawDatabus
-    let initialDatabus = rawDatabus {global_total_frames = length frames}
+    putStrLn $ show (length frames)
+    let initialDatabus = rawDatabus {global_total_frames = length frames - 2}
     chan <- newBChan 10
     _ <- forkIO $ forever $ do
         writeBChan chan Tick

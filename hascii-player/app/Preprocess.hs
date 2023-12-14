@@ -39,4 +39,3 @@ preprocess_video_to_frame source_video_path target_dir = do
   make_dir_if_not_exists $ target_dir ++ "/" ++ hashed ++ "/frames"
   callCommand $ preprocess_convert_command source_video_path $ target_dir ++ "/" ++ hashed
 
-
